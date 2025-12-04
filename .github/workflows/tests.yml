@@ -4,198 +4,131 @@ jobs:
   Compilation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        
-      - name: Compilation et Création de l'exécutable
+      - name: Compilation
         run: |
+          last_directory=$(basename ${{ runner.workspace }})
+          git clone https://github.com/${{ github.repository }}.git
+          cd ./$last_directory
           mkdir build
           cd build
           cmake ..
           make
           make test
-          
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact
-          path: build/src/calculator
-          retention-days: 1
-          
   Test_Add:
     runs-on: ubuntu-latest
     needs: Compilation
     steps:
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          path: build/src/
-          
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: |
+          mkdir -p build
+          cd build
+          cmake .. 
+          make
       - name: Run test "add" and capture report
         run: |
-          cd build/src/ 
+          cd build
           set -e
           echo "== Test add 10 5 ==" > report.txt
-          ./calculator add 10 5 | tee -a report.txt
-          echo "Exit code: $?" >> report.txt
-          
+          ./src/calculator add 10 5 | tee -a report.txt
+          echo "Exit code: $?" >> report. txt
       - name: Upload report as artifact
         uses: actions/upload-artifact@v4
         with:
           name: test-add-report
-          path: build/src/report.txt
-          retention-days: 14
-          
+          path: build/report.txt      # <-- le fichier à récupérer
+          retention-days: 14          # optionnel
       - name: Job summary (facultatif mais pratique)
         run: |
           echo "### Résultat du test *add*" >> $GITHUB_STEP_SUMMARY
           echo '' >> $GITHUB_STEP_SUMMARY
           echo '\n' >> $GITHUB_STEP_SUMMARY
-          cat build/src/report.txt >> $GITHUB_STEP_SUMMARY
+          cat build/report.txt >> $GITHUB_STEP_SUMMARY
           echo '\n' >> $GITHUB_STEP_SUMMARY
-          
   Test_Div:
     runs-on: ubuntu-latest
     needs: Compilation
     steps:
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          path: build/src/
-          
-      - name: Run test "div" and capture report
+      - name: Test fonction add
         run: |
-          cd build/src/
-          set -e
-          echo "== Test div 10 5 ==" > report.txt
-          ./calculator div 10 5 | tee -a report.txt
-          echo "Exit code: $?" >> report.txt
-          
-      - name: Upload report as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-div-report
-          path: build/src/report.txt
-          retention-days: 14
-
-      - name: Job summary
-        run: |
-          echo "### Résultat du test *div*" >> $GITHUB_STEP_SUMMARY
-          echo '' >> $GITHUB_STEP_SUMMARY
-          echo '\n' >> $GITHUB_STEP_SUMMARY
-          cat build/src/report.txt >> $GITHUB_STEP_SUMMARY
-          echo '\n' >> $GITHUB_STEP_SUMMARY
-          
+          last_directory=$(basename ${{ runner.workspace }})
+          git clone https://github.com/${{ github.repository }}.git
+          cd ./$last_directory
+          mkdir build
+          cd build
+          cmake ..
+          make
+          ./src/calculator div 10 5
   Test_Mul:
     runs-on: ubuntu-latest
     needs: Compilation
     steps:
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          path: build/src/
-          
-      - name: Run test "mul" and capture report
+      - name: Test fonction add
         run: |
-          cd build/src/
-          set -e
-          echo "== Test mul 10 5 ==" > report.txt
-          ./calculator mul 10 5 | tee -a report.txt
-          echo "Exit code: $?" >> report.txt
-          
-      - name: Upload report as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-mul-report
-          path: build/src/report.txt
-          retention-days: 14
-
-      - name: Job summary
-        run: |
-          echo "### Résultat du test *mul*" >> $GITHUB_STEP_SUMMARY
-          echo '' >> $GITHUB_STEP_SUMMARY
-          echo '\n' >> $GITHUB_STEP_SUMMARY
-          cat build/src/report.txt >> $GITHUB_STEP_SUMMARY
-          echo '\n' >> $GITHUB_STEP_SUMMARY
-          
+          last_directory=$(basename ${{ runner.workspace }})
+          git clone https://github.com/${{ github.repository }}.git
+          cd ./$last_directory
+          mkdir build
+          cd build
+          cmake ..
+          make
+          ./src/calculator mul 10 5
   Test_Sub:
     runs-on: ubuntu-latest
     needs: Compilation
     steps:
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          path: build/src/
-          
-      - name: Run test "sub" and capture report
+      - name: Test fonction add
         run: |
-          cd build/src/
-          set -e
-          echo "== Test sub 10 5 ==" > report.txt
-          ./calculator sub 10 5 | tee -a report.txt
-          echo "Exit code: $?" >> report.txt
-          
-      - name: Upload report as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-sub-report
-          path: build/src/report.txt
-          retention-days: 14
-
-      - name: Job summary
-        run: |
-          echo "### Résultat du test *sub*" >> $GITHUB_STEP_SUMMARY
-          echo '' >> $GITHUB_STEP_SUMMARY
-          echo '\n' >> $GITHUB_STEP_SUMMARY
-          cat build/src/report.txt >> $GITHUB_STEP_SUMMARY
-          echo '\n' >> $GITHUB_STEP_SUMMARY
-          
+          last_directory=$(basename ${{ runner.workspace }})
+          git clone https://github.com/${{ github.repository }}.git
+          cd ./$last_directory
+          mkdir build
+          cd build
+          cmake ..
+          make
+          ./src/calculator sub 10 5
   Test_Car:
     runs-on: ubuntu-latest
     needs: Compilation
     steps:
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          path: build/src/
-          
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+          make
       - name: Run test "car" and capture report
         run: |
-          cd build/src/
+          cd build
           set -e
-          echo "== Test car 5 1 ==" > report.txt
-          ./calculator car 5 1 | tee -a report.txt
+          echo "== Test car 10 5 ==" > report.txt
+          ./src/calculator car 10 5 | tee -a report.txt
           echo "Exit code: $?" >> report.txt
-          
       - name: Upload report as artifact
         uses: actions/upload-artifact@v4
         with:
           name: test-car-report
-          path: build/src/report.txt
+          path: build/report.txt
           retention-days: 14
-
-      - name: Job summary
+      - name: Job summary (facultatif mais pratique)
         run: |
           echo "### Résultat du test *car*" >> $GITHUB_STEP_SUMMARY
           echo '' >> $GITHUB_STEP_SUMMARY
           echo '\n' >> $GITHUB_STEP_SUMMARY
-          cat build/src/report.txt >> $GITHUB_STEP_SUMMARY
+          cat build/report.txt >> $GITHUB_STEP_SUMMARY
           echo '\n' >> $GITHUB_STEP_SUMMARY
-          
   Deploy:
     runs-on: ubuntu-latest
     needs:
       - Compilation
       - Test_Add
+      - Test_Car
       - Test_Div
       - Test_Mul
       - Test_Sub
-      - Test_Car
     steps:
       - name: Déploiement
-        run: |
-          echo "Déploiement de la solution"
+        run: echo "Déploiement de la solution"
