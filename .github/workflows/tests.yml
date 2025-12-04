@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: Compilation
     steps:
-      - name: Test fonction div
+      - name: Test fonction mul
         run: |
           last_directory=$(basename ${{ runner.workspace }})
           git clone https://github.com/${{ github.repository }}.git
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: Compilation
     steps:
-      - name: Test fonction div
+      - name: Test fonction sub
         run: |
           last_directory=$(basename ${{ runner.workspace }})
           git clone https://github.com/${{ github.repository }}.git
@@ -70,3 +70,17 @@ jobs:
           cmake ..
           make
           ./src/calculator sub 10 5
+  Test_Car:
+    runs-on: ubuntu-latest
+    needs: Compilation
+    steps:
+      - name: Test fonction car
+        run: |
+          last_directory=$(basename ${{ runner.workspace }})
+          git clone https://github.com/${{ github.repository }}.git
+          cd ./$last_directory
+          mkdir build
+          cd build
+          cmake ..
+          make
+          ./src/calculator car 5 1
