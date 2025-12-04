@@ -51,9 +51,7 @@ jobs:
     needs: Compilation
     steps:
       - name: Test fonction div
-      - name: Checkout
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Build
         run: |
           last_directory=$(basename ${{ runner.workspace }})
